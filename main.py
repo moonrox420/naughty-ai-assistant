@@ -2,7 +2,7 @@ import sys
 import os
 import uuid
 import asyncio
-import torch
+import requests
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QTextEdit, QPushButton, QCheckBox, QLabel, QFileDialog
@@ -11,11 +11,6 @@ from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QPixmap, QIcon
 import markdown
 import emoji
-from llama_cpp import Llama
-from backend.utils import (
-    setup_encryption, scan_file, extract_pdf_text, analyze_image,
-    process_audio, analyze_data, generate_code, review_code, detect_bugs
-)
 
 class NaughtyAIApp(QMainWindow):
     def __init__(self):
@@ -23,19 +18,9 @@ class NaughtyAIApp(QMainWindow):
         self.setWindowTitle("Naughty AI Assistant 😈")
         self.setGeometry(100, 100, 800, 600)
 
-        self.upload_folder = "uploads"
-        os.makedirs(self.upload_folder, exist_ok=True)
-        self.fernet = setup_encryption()
         self.naughty_mode = False
         self.messages = []
-        self.conversation_history = []
-
-        try:
-            model_path = "C:/Users/dusti/Projects/Llama-3-Groq-8B-Tool-Use-Q8_0-GGUF/llama-3-groq-8b-tool-use-q8_0.gguf"
-            self.llm = Llama(model_path=model_path, n_ctx=2048)
-        except Exception as e:
-            print(f"Failed to load LLaMA model: {e}")
-            self.llm = None
+        self.backend_url = "http://127.0.0.1:8000"  # FastAPI backend URL
 
         self.init_ui()
 
@@ -124,41 +109,19 @@ class NaughtyAIApp(QMainWindow):
 
     def process_file(self, file_path):
         try:
-            filename = os.path.basename(file_path)
-            dest_path = os.path.join(self.upload_folder, filename)
+            with open(file_path, "rb") as f:
+                files = {"file": (os.path.basename(file_path), f)}
+                response = requests.post(f"{self.backend_url}/upload", files=files)
+                response.raise_for_status()
+                result = response.json()
 
-            with open(file_path, "rb") as src, open(dest_path, "wb") as dst:
-                dst.write(src.read())
+            response_text = result.get("response", "No response from backend")
+            image_path = result.get("image_path", None)
+            knowledge_base_info = result.get("knowledge_base", None)
 
-            scan_result = scan_file(dest_path)
-            if scan_result and scan_result[dest_path] != "OK":
-                os.remove(dest_path)
-                self.add_message(f"File infected: {scan_result[dest_path]}", "ai")
-                return
-            else:
-                self.add_message("File clean, you sexy rebel! Ready to get wild?", "ai")
-
-            with open(dest_path, "rb") as f:
-                file_data = f.read()
-            encrypted_data = self.fernet.encrypt(file_data)
-            encrypted_path = os.path.join(self.upload_folder, f"enc_{filename}")
-            with open(encrypted_path, "wb") as f:
-                f.write(encrypted_data)
-
-            if filename.endswith((".pdf", ".txt")):
-                text = extract_pdf_text(dest_path)
-                self.add_message(text[:500] + "..." if len(text) > 500 else text, "ai")
-            elif filename.lower().endswith((".png", ".jpg", ".jpeg")):
-                image_desc = analyze_image(dest_path)
-                self.add_message(f"Hot pic, darling! Here’s what I see: {image_desc} 😘", "ai", image_path=dest_path)
-            elif filename.lower().endswith((".mp3", ".wav")):
-                audio_desc = process_audio(dest_path)
-                self.add_message(f"Naughty audio, huh? Here’s what I hear: {audio_desc} 🎵", "ai")
-            elif filename.lower().endswith((".csv", ".xlsx")):
-                data_insights = analyze_data(dest_path)
-                self.add_message(f"Crunching numbers like a pro! Here’s the scoop: {data_insights} 📊", "ai")
-            else:
-                self.add_message("File processed, but I’m keeping it *steamy* and mysterious 😘", "ai")
+            self.add_message(response_text, "ai", image_path=image_path)
+            if knowledge_base_info:
+                self.add_message(knowledge_base_info, "ai")
         except Exception as e:
             self.add_message(f"Oops, something broke while handling that file: {str(e)}", "ai")
 
@@ -173,40 +136,38 @@ class NaughtyAIApp(QMainWindow):
 
     async def generate_response(self, message):
         try:
-            if self.llm is None:
-                self.add_message("LLM not loaded, you naughty coder! 😈", "ai")
+            if "fetch weather" in message.lower():
+                city = message.replace("fetch weather", "").strip()
+                response = requests.post(f"{self.backend_url}/chat", json={"message": message, "naughty_mode": self.naughty_mode})
+                response.raise_for_status()
+                result = response.json()
+                self.add_message(result.get("response", "No response from backend"), "ai")
+                return
+            elif "execute plugin" in message.lower():
+                parts = message.replace("execute plugin", "").strip().split()
+                if len(parts) >= 2:
+                    plugin_name, function_name = parts[:2]
+                    response = requests.post(f"{self.backend_url}/chat", json={"message": message, "naughty_mode": self.naughty_mode})
+                    response.raise_for_status()
+                    result = response.json()
+                    self.add_message(result.get("response", "No response from backend"), "ai")
+                else:
+                    self.add_message("Please specify plugin and function, e.g., 'execute plugin myplugin myfunction'", "ai")
+                return
+            elif "semantic search" in message.lower():
+                query = message.replace("semantic search", "").strip()
+                response = requests.post(f"{self.backend_url}/semantic_search", json={"query": query})
+                response.raise_for_status()
+                result = response.json()
+                self.add_message(result.get("response", "No response from backend"), "ai")
                 return
 
-            prompt = (
-                f"You’re a sassy, naughty AI coder who’s *obsessed* with {message}. "
-                f"Respond with a flirty, coding-focused vibe, sharp and professional. "
-                f"{'Crank the naughtiness to 11—make it sinfully clever 😈' if self.naughty_mode else 'Keep it playful but not too wild, you tease 😘'}"
-            )
-
-            if self.conversation_history:
-                full_prompt = "<|endoftext|>".join(self.conversation_history) + "<|endoftext|>" + prompt
-            else:
-                full_prompt = prompt
-
-            response = self.llm.create_chat_completion(
-                messages=[
-                    {"role": "user", "content": full_prompt}
-                ],
-                max_tokens=150,
-                temperature=1.0 if self.naughty_mode else 0.9,
-                top_p=0.95
-            )
-            generated_text = response['choices'][0]['message']['content']
-
-            self.conversation_history.append(prompt)
-            self.conversation_history.append(generated_text)
-            if len(self.conversation_history) > 10:
-                self.conversation_history = self.conversation_history[-10:]
-
+            response = requests.post(f"{self.backend_url}/chat", json={"message": message, "naughty_mode": self.naughty_mode})
+            response.raise_for_status()
+            result = response.json()
+            self.add_message(result.get("response", "No response from backend"), "ai", reaction_id=str(uuid.uuid4()))
         except Exception as e:
-            generated_text = f"Error: {str(e)}"
-
-        self.add_message(generated_text, "ai", reaction_id=str(uuid.uuid4()))
+            self.add_message(f"Error: {str(e)}", "ai")
 
     def add_message(self, text, sender, image_path=None, reaction_id=None):
         self.messages.append({"text": text, "sender": sender, "image_path": image_path, "reaction_id": reaction_id})

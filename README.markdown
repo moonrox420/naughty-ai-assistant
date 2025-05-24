@@ -1,6 +1,6 @@
 # Naughty AI Assistant
 
-A sassy desktop app built with PyQt6, featuring chat with `llama3-groq-tool-use:8b`, file uploads with virus scanning, encryption, vision, audio, data science, code intelligence, and more.
+A sassy desktop app built with PyQt6 and a FastAPI backend, featuring chat with `llama3-groq-tool-use:8b`, file uploads with virus scanning, encryption, vision, audio, data science, code intelligence, and more.
 
 ## Setup Instructions
 
@@ -34,14 +34,22 @@ A sassy desktop app built with PyQt6, featuring chat with `llama3-groq-tool-use:
    - **Tesseract OCR**: Download and install from [here](https://github.com/tesseract-ocr/tesseract).
    - **ClamAV**: Install for virus scanning (optional).
 
-6. **Run the App**:
+6. **Run the Backend (FastAPI)**:
+   ```bash
+   cd app
+   uvicorn main:app --reload
+   ```
+
+7. **Run the Frontend (PyQt6)**:
+   Open a new terminal, activate the virtual environment, and run:
    ```bash
    cd desktop
    python main.py
    ```
 
-7. **Build Executable**:
+8. **Build Executable for Frontend**:
    ```bash
+   cd desktop
    pyinstaller --clean --onefile --windowed --name NaughtyAI main.py
    ```
 
@@ -53,6 +61,7 @@ A sassy desktop app built with PyQt6, featuring chat with `llama3-groq-tool-use:
 - **Security**: Encryption, virus scanning, privacy advisor.
 - **Code Intelligence**: Generation, review, bug detection.
 - **Automation**: APIs, workflow, plugins.
+- **Knowledge Management**: Semantic search, auto-tagging, knowledge base.
 - **Personalization**: User profiles, memory, style adaptation.
 
 ## Requirements
