@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "defense_quickstart_audio_transcription_translation"
+version = "0.0.1"
+description = "Transcribe war-related audio recordings and translate them into English with this example repository"
+authors = ["Restack Team <service@restack.io>"]
+readme = "README.md"
+packages = [{include = "src"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+fastapi = "0.115.4"
+uvicorn = "0.32.0"
+python-dotenv = "1.0.1"
+streamlit = "1.40.0"
+requests = "2.32.3"
+openai = "^1.57.2"
+groq = "^0.13.0"
+restack-ai = "^0.0.48"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+services = "src.services:run_services"
+app = "src.app:run_app"
