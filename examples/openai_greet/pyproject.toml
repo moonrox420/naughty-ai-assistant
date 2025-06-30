@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "openai_greet"
+version = "0.0.1"
+description = "A simple example to greet a person using OpenAI"
+authors = [
+    "Restack Team <service@restack.io>",
+]
+readme = "README.md"
+packages = [{include = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pydantic = "^2.9.2"
+restack-openai = "^0.0.13"
+restack-ai = "^0.0.21"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+services = "src.services:run_services"
+schedule = "schedule_workflow:run_schedule_workflow"
