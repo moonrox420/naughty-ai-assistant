@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "defense_quickstart_news_scraper_summarizer"
+version = "0.0.1"
+description = "Scrape Ukrainian news articles, translate them to English, and summarize key points in just a few steps with this example repository"
+authors = [
+    "Restack Team <service@restack.io>",
+]
+readme = "README.md"
+packages = [{include = "src"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+fastapi = "0.115.4"
+uvicorn = "0.32.0"
+python-dotenv = "1.0.1"
+streamlit = "1.40.0"
+requests = "2.32.3"
+openai = "^1.57.2"
+bs4 = "0.0.2"
+pydantic = "^2.10.3"
+restack-ai = "^0.0.48"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+services = "src.services:run_services"
+app = "src.app:run_app"
