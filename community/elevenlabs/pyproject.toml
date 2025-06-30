@@ -1,0 +1,21 @@
+[project]
+name = "elvenlabs"
+version = "0.0.1"
+description = "A simple example to get started with the restack-ai SDK with elevenlabs"
+authors = [{ name = "Restack Team", email = "service@restack.io" }]
+requires-python = ">=3.10,<4.0"
+readme = "README.md"
+dependencies = [
+    "restack-ai==0.0.47",
+    "watchfiles>=1.0.0,<2",
+    "elevenlabs>=0.2.16,<0.3",
+]
+
+[project.scripts]
+dev = "src.services:watch_services"
+services = "src.services:run_services"
+text_to_speech = "schedule_workflow:run_schedule_workflow"
+voice_isolation = "schedule_workflow_audio_isolation:run_schedule_workflow_audio_isolation"
+
+[dependency-groups]
+dev = ["pytest==6.2"]

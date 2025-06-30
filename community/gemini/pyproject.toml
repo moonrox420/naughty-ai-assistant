@@ -1,0 +1,18 @@
+[project]
+name = "gemini"
+version = "0.0.1"
+description = "A simple example to integrate Google Gemini into a Restack project"
+authors = [{ name = "Restack Team", email = "service@restack.io" }]
+requires-python = ">=3.10,<4.0"
+readme = "README.md"
+dependencies = [
+    "restack-ai>=0.0.53,<0.0.54",
+    "google-genai==0.5.0",
+    "watchfiles>=1.0.0,<2",
+    "pydantic>=2.10.5,<3",
+]
+
+[project.scripts]
+dev = "src.services:watch_services"
+services = "src.services:run_services"
+schedule = "schedule_workflow:run_schedule_workflow"

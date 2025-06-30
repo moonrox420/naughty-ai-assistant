@@ -1,0 +1,20 @@
+[project]
+name = "child_workflows"
+version = "0.0.1"
+description = "A simple example to get started with the restack-ai SDK"
+authors = [{ name = "Restack Team", email = "service@restack.io" }]
+requires-python = ">=3.10,<4.0"
+readme = "README.md"
+dependencies = [
+    "restack-ai>=0.0.54,<0.0.55",
+    "watchfiles>=1.0.3,<2",
+    "pydantic>=2.10.4,<3",
+]
+
+[project.scripts]
+dev = "src.services:watch_services"
+services = "src.services:run_services"
+schedule = "schedule_workflow:run_schedule_workflow"
+
+[dependency-groups]
+dev = ["pytest==6.2"]

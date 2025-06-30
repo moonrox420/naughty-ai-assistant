@@ -1,0 +1,21 @@
+[project]
+name = "weaviate_search"
+version = "0.0.1"
+description = "A simple example to get started with the restack-ai SDK"
+authors = [{ name = "Restack Team", email = "service@restack.io" }]
+requires-python = ">=3.10,<4.0"
+readme = "README.md"
+dependencies = [
+    "pydantic>=2.10.3,<3",
+    "requests==2.32.3",
+    "weaviate-client==4.9.0",
+    "python-dotenv==1.0.1",
+]
+
+[project.scripts]
+services = "src.services:run_services"
+schedule-seed-workflow = "schedule_workflow:run_schedule_seed_workflow"
+schedule-search-workflow = "schedule_workflow:run_schedule_search_workflow"
+
+[dependency-groups]
+dev = ["pytest==6.2"]

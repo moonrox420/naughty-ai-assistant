@@ -1,0 +1,19 @@
+[project]
+name = "re_act_example"
+version = "0.0.1"
+description = "ReAct Example"
+authors = [{ name = "Restack Team", email = "service@restack.io" }]
+requires-python = ">=3.10,<4.0"
+readme = "README.md"
+dependencies = [
+    "openai>=1.57.2,<2",
+    "python-dotenv==1.0.1",
+    "restack-ai==0.0.53",
+    "sendgrid>=6.11.0,<7",
+    "watchfiles>=1.0.0,<2",
+]
+
+[project.scripts]
+dev = "src.services:watch_services"
+services = "src.services:run_services"
+schedule_workflow = "schedule_workflow:run_schedule_workflow"

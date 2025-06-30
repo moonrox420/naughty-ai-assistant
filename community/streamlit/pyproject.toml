@@ -1,0 +1,15 @@
+[project]
+name = "restack-streamlit"
+version = "0.0.1"
+description = ""
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.10,<4.0"
+readme = "README.md"
+dependencies = [
+    "restack-ai>=0.0.48,<0.0.49",
+    "streamlit==1.39.0",
+    "blinker==1.8.2",
+]
+
+[tool.uv]
+package = false

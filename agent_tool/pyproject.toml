@@ -1,0 +1,17 @@
+[project]
+name = "agent_tool"
+version = "0.0.1"
+description = "A tool for an AI agent"
+authors = [{ name = "Restack Team", email = "service@restack.io" }]
+requires-python = ">=3.10,<4.0"
+readme = "README.md"
+dependencies = [
+    "watchfiles>=1.0.0,<2",
+    "pydantic>=2.10.4,<3",
+    "restack-ai>=0.0.54,<0.0.55",
+]
+
+[project.scripts]
+dev = "src.services:watch_services"
+services = "src.services:run_services"
+

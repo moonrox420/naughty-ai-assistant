@@ -1,0 +1,23 @@
+[project]
+name = "pdf_ocr"
+version = "0.0.1"
+description = "A simple example to OCR a pdf"
+authors = [{ name = "Restack Team", email = "service@restack.io" }]
+requires-python = ">=3.12,<4.0"
+readme = "README.md"
+dependencies = [
+    "openai>=1.57.2,<2",
+    "python-dotenv==1.0.1",
+    "python-multipart>=0.0.19,<0.0.20",
+    "numpy>=2.2.0,<3",
+    "pillow>=11.0.0,<12",
+    "pydantic>=2.10.3,<3",
+    "python-doctr[torch]>=0.10.0,<0.11",
+    "restack-ai>=0.0.53,<0.0.54",
+    "watchfiles>=1.0.4,<2",
+    "requests>=2.32.3,<3",
+]
+
+[project.scripts]
+dev = "src.services:watch_services"
+services = "src.services:run_services"

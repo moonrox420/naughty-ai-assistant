@@ -1,0 +1,19 @@
+[project]
+name = "e2b-restack"
+version = "0.0.1"
+description = "A simple example for e2b with Restack"
+authors = [{ name = "Restack Team", email = "service@restack.io" }]
+requires-python = ">=3.10,<4.0"
+readme = "README.md"
+dependencies = [
+    "watchfiles>=1.0.0,<2",
+    "pydantic>=2.10.4,<3",
+    "openai>=1.57.2,<2",
+    "e2b-code-interpreter>=1.0.3,<2",
+    "restack-ai>=0.0.52,<0.0.53",
+]
+
+[project.scripts]
+dev = "src.services:watch_services"
+services = "src.services:run_services"
+schedule = "schedule_workflow:run_schedule_workflow"
